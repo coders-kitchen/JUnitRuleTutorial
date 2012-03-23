@@ -35,7 +35,9 @@ public class FilePrepareStatement extends Statement {
     private List<String> generalFiles;
     private List<String> directories;
 
-    public FilePrepareStatement(final Statement base, final FrameworkMethod method, final Object target) {
+    public FilePrepareStatement(final Statement base, 
+            final FrameworkMethod method, 
+            final Object target) {
         this.base = base;
         this.method = method;
         this.target = target;
@@ -80,12 +82,13 @@ public class FilePrepareStatement extends Statement {
 
     private void createDirectorySetup(DirectorySetup ann) throws IOException {
         final String currentDir = ann.directory();
+        String[] files = ann.files();
         directories.add(currentDir);
         File directory = new File(currentDir);
         if (!directory.exists() && !directory.mkdirs()) {
             throw new IOException("Directory '" + directory.getAbsolutePath() + "' does not exist and creation failed!");
         }
-        String[] files = ann.files();
+        
         if (files != null) {
             for (String currentFile : files) {
                 File toCreate = new File(directory, currentFile);
