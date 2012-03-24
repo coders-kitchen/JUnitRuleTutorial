@@ -4,6 +4,8 @@
  */
 package de.betaphitheta.tutorials.filepreparerule;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
@@ -15,6 +17,8 @@ import org.junit.runners.model.Statement;
  */
 public class FilePrepareRule implements MethodRule {
     public Statement apply(final Statement base, FrameworkMethod method, Object target) {
-        return new FilePrepareStatement(base, method, target);
+        FileAnnotationParser fileAnnotationParser = new FileAnnotationParser(method, target);
+        final HashMap<String, ArrayList<String>> structure = fileAnnotationParser.parseAnnotationsAndCreateStructure();
+        return new FilePrepareStatement(base, structure);
     }
 }
