@@ -1,0 +1,8 @@
+This project is a example of a JUnit @Rule implementation.
+
+It provides, via @DirectorySetup and @FileSetup annotations, the feasibility to generate a specific filestructure.
+
+It is possible to setup a general environment, when using the annotations on testclass level.
+It's also possible to setup a specific test environment for single methods.
+
+Both ways are supported via the annotations, mentioned above.
