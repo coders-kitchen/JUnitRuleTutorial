@@ -60,7 +60,7 @@ public class FilePrepareStatement extends Statement {
                     }
                 } catch (Throwable t) {
                     IOException ex = new IOException("Touch of file '" + toCreate.getAbsolutePath() + "' failed!");
-                    ex.addSuppressed(t);
+                    ex.setStackTrace(t.getStackTrace());
                     throw ex;
                 }
             }
