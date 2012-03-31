@@ -32,15 +32,19 @@ public class FilePrepareStatement extends Statement {
 
     @Override
     public void evaluate() throws Throwable {
+        boolean setupSuccessfully = false;
         try {
-            createDirectorySetup();
+            setupStructure();
+            setupSuccessfully = true;
             base.evaluate();
         } finally {
-            deleteDirectorySetup();
+            if (setupSuccessfully) {
+                tearDownStructure();
+            }
         }
     }
 
-    private void createDirectorySetup() throws IOException {
+    private void setupStructure() throws IOException {
         Set<String> directories = directoryStructure.keySet();
         for (String currentDir : directories) {
             File directory = new File(currentDir);
@@ -50,14 +54,20 @@ public class FilePrepareStatement extends Statement {
             HashSet<String> files = directoryStructure.get(currentDir);
             for (String currentFile : files) {
                 File toCreate = new File(directory, currentFile);
-                if (!toCreate.createNewFile()) {
-                    throw new IOException("Touch of file '" + toCreate.getAbsolutePath() + "' failed!");
+                try {
+                    if (!toCreate.createNewFile()) {
+                        throw new IOException("Touch of file '" + toCreate.getAbsolutePath() + "' failed!");
+                    }
+                } catch (Throwable t) {
+                    IOException ex = new IOException("Touch of file '" + toCreate.getAbsolutePath() + "' failed!");
+                    ex.addSuppressed(t);
+                    throw ex;
                 }
             }
         }
     }
 
-    private void deleteDirectorySetup() throws IOException {
+    private void tearDownStructure() throws IOException {
         Set<String> directories = directoryStructure.keySet();
         for (String directory : directories) {
             recursiveDelete(new File(directory));
