@@ -8,6 +8,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import org.junit.runners.model.FrameworkMethod;
 
@@ -26,20 +27,26 @@ public class FileAnnotationParser {
     final FrameworkMethod method;
     final Object target;
     final List<String> generalFiles;
-    final HashMap<String, ArrayList<String>> directoryStructure;
+    final HashMap<String, HashSet<String>> directoryStructure;
 
     public FileAnnotationParser(final FrameworkMethod method, final Object target) {
         this.method = method;
         this.target = target;
         generalFiles = new ArrayList<String>();
-        directoryStructure = new HashMap<String, ArrayList<String>>();
+        directoryStructure = new HashMap<String, HashSet<String>>();
     }
 
-    public HashMap<String, ArrayList<String>> parseAnnotationsAndCreateStructure() {
+    public HashMap<String, HashSet<String>> parseAnnotationsAndCreateStructure() {
         prepareGeneralFileSetupIfRequested();
         prepareGeneralDirectorySetupIfRequested();
         createDirectoryStructureMap();
         return directoryStructure;
+    }
+
+    private void parseIfAnnotationIsNotNull(Annotation[] annotations) {
+        if (annotations != null) {
+            parseStructureFromAnnotations(annotations);
+        }
     }
 
     private void parseStructureFromAnnotations(Annotation[] annotations) {
@@ -52,10 +59,10 @@ public class FileAnnotationParser {
                 final String currentDir = setup.directory();
                 String[] files = setup.files();
                 if (!directoryStructure.containsKey(currentDir)) {
-                    ArrayList<String> fileList = new ArrayList<String>();
+                    HashSet<String> fileList = new HashSet<String>();
                     directoryStructure.put(currentDir, fileList);
                 }
-                ArrayList<String> fileList = directoryStructure.get(currentDir);
+                HashSet<String> fileList = directoryStructure.get(currentDir);
                 fileList.addAll(generalFiles);
                 fileList.addAll(Arrays.asList(files));
             }
@@ -77,11 +84,11 @@ public class FileAnnotationParser {
 
     private void prepareGeneralDirectorySetupIfRequested() {
         Annotation[] annotations = target.getClass().getAnnotations();
-        parseStructureFromAnnotations(annotations);
+        parseIfAnnotationIsNotNull(annotations);
     }
 
     private void createDirectoryStructureMap() {
         Annotation[] annotations = method.getAnnotations();
-        parseStructureFromAnnotations(annotations);
+        parseIfAnnotationIsNotNull(annotations);
     }
 }

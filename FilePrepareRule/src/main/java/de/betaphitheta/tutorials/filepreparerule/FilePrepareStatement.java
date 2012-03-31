@@ -6,8 +6,8 @@ package de.betaphitheta.tutorials.filepreparerule;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import org.junit.runners.model.Statement;
 
@@ -23,9 +23,9 @@ import org.junit.runners.model.Statement;
 public class FilePrepareStatement extends Statement {
 
     private Statement base;
-    private final HashMap<String, ArrayList<String>> directoryStructure;
+    private final HashMap<String, HashSet<String>> directoryStructure;
 
-    public FilePrepareStatement(final Statement base, HashMap<String, ArrayList<String>> directoryStructure) {
+    public FilePrepareStatement(final Statement base, HashMap<String, HashSet<String>> directoryStructure) {
         this.base = base;
         this.directoryStructure = directoryStructure;
     }
@@ -47,7 +47,7 @@ public class FilePrepareStatement extends Statement {
             if (!directory.exists() && !directory.mkdirs()) {
                 throw new IOException("Directory '" + directory.getAbsolutePath() + "' does not exist and creation failed!");
             }
-            ArrayList<String> files = directoryStructure.get(currentDir);
+            HashSet<String> files = directoryStructure.get(currentDir);
             for (String currentFile : files) {
                 File toCreate = new File(directory, currentFile);
                 if (!toCreate.createNewFile()) {
