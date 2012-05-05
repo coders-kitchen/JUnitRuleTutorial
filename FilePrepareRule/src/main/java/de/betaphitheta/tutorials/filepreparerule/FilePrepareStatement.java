@@ -44,15 +44,11 @@ public class FilePrepareStatement extends Statement {
 
     @Override
     public void evaluate() throws Throwable {
-        boolean setupSuccessfully = false;
         try {
             setupStructure();
-            setupSuccessfully = true;
             base.evaluate();
         } finally {
-            if (setupSuccessfully) {
                 tearDownStructure();
-            }
         }
     }
 
@@ -89,6 +85,8 @@ public class FilePrepareStatement extends Statement {
     private void recursiveDelete(File directory) throws IOException {
         File[] listed = directory.listFiles();
         for (File subFile : listed) {
+            if(!subFile.exists())
+                continue;
             if (subFile.isDirectory()) {
                 recursiveDelete(subFile);
             }
