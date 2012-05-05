@@ -19,15 +19,16 @@ import java.util.HashSet;
 public class FilePrepareRule implements TestRule {
 
     private final Object classUnderTest;
-
+    FileAnnotationParser fileAnnotationParser;
     public FilePrepareRule(Object classUnderTest) {
-
         this.classUnderTest = classUnderTest;
+        fileAnnotationParser = new FileAnnotationParser();
     }
 
     @Override
     public Statement apply(Statement base, Description description) {
-        FileAnnotationParser fileAnnotationParser = new FileAnnotationParser(description, classUnderTest);
+        fileAnnotationParser.setDescription(description);
+        fileAnnotationParser.target = classUnderTest;
         final HashMap<String, HashSet<String>> structure = fileAnnotationParser.parseAnnotationsAndCreateStructure();
         return new FilePrepareStatement(base, structure) ;
     }

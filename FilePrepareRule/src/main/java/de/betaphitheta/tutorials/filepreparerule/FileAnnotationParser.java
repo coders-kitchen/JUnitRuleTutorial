@@ -21,10 +21,20 @@ import java.util.*;
  */
 public class FileAnnotationParser {
 
-    final Description description;
-    final Object target;
+    Description description;
+
+    public void setDescription(Description description) {
+        this.description = description;
+    }
+
+    Object target;
     final List<String> generalFiles;
     final HashMap<String, HashSet<String>> directoryStructure;
+
+    public FileAnnotationParser() {
+        generalFiles = new ArrayList<String>();
+        directoryStructure = new HashMap<String, HashSet<String>>();
+    }
 
     public FileAnnotationParser(final Description description, final Object classUnderTest) {
         this.description = description;
