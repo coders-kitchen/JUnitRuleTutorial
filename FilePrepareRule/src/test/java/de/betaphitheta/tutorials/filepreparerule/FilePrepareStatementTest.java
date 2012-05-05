@@ -4,17 +4,15 @@
  */
 package de.betaphitheta.tutorials.filepreparerule;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runners.model.Statement;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.junit.runners.model.Statement;
-import org.junit.Before;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -38,7 +36,7 @@ public class FilePrepareStatementTest extends Statement {
     }
 
     @Test
-    public void successfullSetup() throws Exception {
+    public void successfulSetup() throws Exception {
         try {
             statement.evaluate();
         } catch (Throwable ex) {
@@ -51,8 +49,8 @@ public class FilePrepareStatementTest extends Statement {
     public void directorySetupFailed() throws Exception {
         try {
             File f = new File("./tmp");
-            f.mkdirs();
-            f.setWritable(false);
+            assertTrue(f.mkdirs());
+            assertTrue(f.setWritable(false));
 
             HashMap<String, HashSet<String>> structure = new HashMap<String, HashSet<String>>();
             final HashSet<String> fileSet = new HashSet<String>();
@@ -64,8 +62,8 @@ public class FilePrepareStatementTest extends Statement {
             assertEquals("Directory '/home/mrpaeddah/Development/tutorials/JUnitRuleTutorial/FilePrepareRule/./tmp/tmp' does not exist and creation failed!", ex.getMessage());
         } finally {
             File f = new File("./tmp");
-            f.setWritable(true);
-            f.delete();
+            assertTrue(f.setWritable(true));
+            assertTrue(f.delete());
         }
     }
 
@@ -73,8 +71,8 @@ public class FilePrepareStatementTest extends Statement {
     public void fileSetupFailed() throws Exception {
         try {
             File f = new File("./tmp");
-            f.mkdirs();
-            f.setWritable(false);
+            assertTrue(f.mkdirs());
+            assertTrue(f.setWritable(false));
 
             HashMap<String, HashSet<String>> structure = new HashMap<String, HashSet<String>>();
             final HashSet<String> fileSet = new HashSet<String>();
@@ -86,8 +84,8 @@ public class FilePrepareStatementTest extends Statement {
             assertEquals("Touch of file '/home/mrpaeddah/Development/tutorials/JUnitRuleTutorial/FilePrepareRule/./tmp/test.jar' failed!", ex.getMessage());
         } finally {
             File f = new File("./tmp");
-            f.setWritable(true);
-            f.delete();
+            assertTrue(f.setWritable(true));
+            assertTrue(f.delete());
         }
     }
 

@@ -4,12 +4,13 @@
  */
 package de.betaphitheta.tutorials.filepreparerule;
 
+import org.junit.runners.model.Statement;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.runners.model.Statement;
 
 /**
  * This Statement wraps the original statement.
@@ -60,7 +61,7 @@ public class FilePrepareStatement extends Statement {
                     }
                 } catch (Throwable t) {
                     IOException ex = new IOException("Touch of file '" + toCreate.getAbsolutePath() + "' failed!");
-                    ex.addSuppressed(t);
+                    ex.setStackTrace(t.getStackTrace());
                     throw ex;
                 }
             }
