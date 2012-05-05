@@ -4,17 +4,15 @@
  */
 package de.betaphitheta.tutorials.filepreparerule;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runners.model.Statement;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.junit.runners.model.Statement;
-import org.junit.Before;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -38,7 +36,7 @@ public class FilePrepareStatementTest extends Statement {
     }
 
     @Test
-    public void successfullSetup() throws Exception {
+    public void successfulSetup() throws Exception {
         try {
             statement.evaluate();
         } catch (Throwable ex) {
@@ -61,6 +59,7 @@ public class FilePrepareStatementTest extends Statement {
             statement = new FilePrepareStatement(this, structure);
             statement.evaluate();
         } catch (Throwable ex) {
+            ex.printStackTrace();
             assertEquals("Directory '/home/mrpaeddah/Development/tutorials/JUnitRuleTutorial/FilePrepareRule/./tmp/tmp' does not exist and creation failed!", ex.getMessage());
         } finally {
             File f = new File("./tmp");

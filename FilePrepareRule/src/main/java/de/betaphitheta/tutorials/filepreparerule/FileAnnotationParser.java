@@ -4,34 +4,41 @@
  */
 package de.betaphitheta.tutorials.filepreparerule;
 
+import org.junit.runner.Description;
+
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import org.junit.runners.model.FrameworkMethod;
+import java.util.*;
 
 /**
  * This class parses the requested directory and file structure.
  * 
  * The structure is configured by the FileSetup and DirectorySetup annotations.
- * Both annotations can be used in scope of a test-method or a test-class. If the
- * scope is test-class, the provided informations are used for every test-method.
+ * Both annotations can be used in scope of a test-description or a test-class. If the
+ * scope is test-class, the provided information are used for every test-description.
  * 
- * On the other hand a test-method scoped annotation is only valid when the method is executed.
+ * On the other hand a test-description scoped annotation is only valid when the description is executed.
  * @author peter
  */
 public class FileAnnotationParser {
 
-    final FrameworkMethod method;
-    final Object target;
+    Description description;
+
+    public void setDescription(Description description) {
+        this.description = description;
+    }
+
+    Object target;
     final List<String> generalFiles;
     final HashMap<String, HashSet<String>> directoryStructure;
 
-    public FileAnnotationParser(final FrameworkMethod method, final Object target) {
-        this.method = method;
-        this.target = target;
+    public FileAnnotationParser() {
+        generalFiles = new ArrayList<String>();
+        directoryStructure = new HashMap<String, HashSet<String>>();
+    }
+
+    public FileAnnotationParser(final Description description, final Object classUnderTest) {
+        this.description = description;
+        this.target = classUnderTest;
         generalFiles = new ArrayList<String>();
         directoryStructure = new HashMap<String, HashSet<String>>();
     }
@@ -70,7 +77,7 @@ public class FileAnnotationParser {
     }
 
     private void prepareGeneralFileSetupIfRequested() {
-        FileSetup fileSetup = method.getAnnotation(FileSetup.class);
+        FileSetup fileSetup = description.getAnnotation(FileSetup.class);
         addFilesToGeneralFiles(fileSetup);
         fileSetup = target.getClass().getAnnotation(FileSetup.class);
         addFilesToGeneralFiles(fileSetup);
@@ -88,7 +95,8 @@ public class FileAnnotationParser {
     }
 
     private void createDirectoryStructureMap() {
-        Annotation[] annotations = method.getAnnotations();
-        parseIfAnnotationIsNotNull(annotations);
+        Collection<Annotation> annotations;
+        annotations = description.getAnnotations();
+        parseIfAnnotationIsNotNull(annotations.toArray(new Annotation[annotations.size()]));
     }
 }

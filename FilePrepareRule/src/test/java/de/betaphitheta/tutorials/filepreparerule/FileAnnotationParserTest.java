@@ -4,16 +4,16 @@
  */
 package de.betaphitheta.tutorials.filepreparerule;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runners.model.FrameworkMethod;
+import org.junit.runner.Description;
+
+import java.lang.annotation.Annotation;
+import java.util.*;
+
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  *
@@ -21,7 +21,8 @@ import static org.mockito.Mockito.*;
  */
 public class FileAnnotationParserTest {
 
-    FrameworkMethod method;
+    Description description;
+
     DirectorySetup directorySetup;
     FileSetup fileSetup;
     FileAnnotationParser parser;
@@ -37,7 +38,7 @@ public class FileAnnotationParserTest {
 
     @Before
     public void setUpClass() throws Exception {
-        method = mock(FrameworkMethod.class);
+        description = mock(Description.class);
 
         directorySetup = mock(DirectorySetup.class);
         when(directorySetup.directory()).thenReturn(directorySetupDirectory);
@@ -49,7 +50,7 @@ public class FileAnnotationParserTest {
 
     @Test
     public void parseOnlyClassDefaultDirectoryStructure() {
-        parser = new FileAnnotationParser(method, new DefaultDirectoryClass());
+        parser = new FileAnnotationParser(description, new DefaultDirectoryClass());
         final String expectedDirectory = "./tmp";
         final int expectedDirectoryCount = 1;
         final String[] expectedFiles = new String[]{"test.jar", "test.war"};
@@ -58,7 +59,7 @@ public class FileAnnotationParserTest {
 
     @Test
     public void parseDefaultDirectoryWithAdditionalDefaultFiles() {
-        parser = new FileAnnotationParser(method, new DefaultDirectoryAndDefaultFilesClass());
+        parser = new FileAnnotationParser(description, new DefaultDirectoryAndDefaultFilesClass());
         final String expectedDirectory = "./tmp";
         final int expectedDirectoryCount = 1;
         final String[] expectedFiles = new String[]{"test.jar", "test.war", "test.wab"};
@@ -67,25 +68,33 @@ public class FileAnnotationParserTest {
 
     @Test
     public void parseDirectorySetupOnlyAtTestMethod() {
-        when(method.getAnnotations()).thenReturn(new Annotation[]{directorySetup});
-        parser = new FileAnnotationParser(method, new EmptyTestClass());
+        Collection<Annotation> annotationCollection = new ArrayList<Annotation>();
+        annotationCollection.add(directorySetup);
+
+        when(description.getAnnotations()).thenReturn(annotationCollection);
+        parser = new FileAnnotationParser(description, new EmptyTestClass());
         runParseTest(1, directorySetupDirectory, directorySetupFiles);
     }
     
     @Test
     public void parseDirectorySetupAndFileSetupAtTestMethod() {
-        when(method.getAnnotations()).thenReturn(new Annotation[]{directorySetup, fileSetup});
-        when(method.getAnnotation(FileSetup.class)).thenReturn(fileSetup);
-        parser = new FileAnnotationParser(method, new EmptyTestClass());
+        Collection<Annotation> annotationCollection = new ArrayList<Annotation>();
+        annotationCollection.add(directorySetup);
+        annotationCollection.add(fileSetup);
+        when(description.getAnnotations()).thenReturn(annotationCollection);
+        when(description.getAnnotation(FileSetup.class)).thenReturn(fileSetup);
+        parser = new FileAnnotationParser(description, new EmptyTestClass());
         String[] files = {directorySetupFiles[0], fileSetupFiles[0]};
         runParseTest(1, directorySetupDirectory, files);
     }
 
     @Test
     public void parseFileSetupOnlyAtTestMethod() {
-        when(method.getAnnotations()).thenReturn(new Annotation[]{fileSetup});
-        when(method.getAnnotation(FileSetup.class)).thenReturn(fileSetup);
-        parser = new FileAnnotationParser(method, new EmptyTestClass());
+        Collection<Annotation> annotationCollection = new ArrayList<Annotation>();
+        annotationCollection.add(fileSetup);
+        when(description.getAnnotations()).thenReturn(annotationCollection);
+        when(description.getAnnotation(FileSetup.class)).thenReturn(fileSetup);
+        parser = new FileAnnotationParser(description, new EmptyTestClass());
         HashMap<String, HashSet<String>> parsed = parser.parseAnnotationsAndCreateStructure();
         Set<String> keys = parsed.keySet();
         assertNotNull(keys);

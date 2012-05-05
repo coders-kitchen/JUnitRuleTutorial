@@ -4,12 +4,13 @@
  */
 package de.betaphitheta.tutorials.filepreparerule;
 
+import org.junit.runners.model.Statement;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.runners.model.Statement;
 
 /**
  * This Statement wraps the original statement.
