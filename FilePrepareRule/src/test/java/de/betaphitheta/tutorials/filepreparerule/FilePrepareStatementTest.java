@@ -49,8 +49,8 @@ public class FilePrepareStatementTest extends Statement {
     public void directorySetupFailed() throws Exception {
         try {
             File f = new File("./tmp");
-            assertTrue(f.mkdirs());
-            assertTrue(f.setWritable(false));
+            f.mkdirs();
+            f.setWritable(false);
 
             HashMap<String, HashSet<String>> structure = new HashMap<String, HashSet<String>>();
             final HashSet<String> fileSet = new HashSet<String>();
@@ -59,11 +59,12 @@ public class FilePrepareStatementTest extends Statement {
             statement = new FilePrepareStatement(this, structure);
             statement.evaluate();
         } catch (Throwable ex) {
+            ex.printStackTrace();
             assertEquals("Directory '/home/mrpaeddah/Development/tutorials/JUnitRuleTutorial/FilePrepareRule/./tmp/tmp' does not exist and creation failed!", ex.getMessage());
         } finally {
             File f = new File("./tmp");
-            assertTrue(f.setWritable(true));
-            assertTrue(f.delete());
+            f.setWritable(true);
+            f.delete();
         }
     }
 
@@ -71,8 +72,8 @@ public class FilePrepareStatementTest extends Statement {
     public void fileSetupFailed() throws Exception {
         try {
             File f = new File("./tmp");
-            assertTrue(f.mkdirs());
-            assertTrue(f.setWritable(false));
+            f.mkdirs();
+            f.setWritable(false);
 
             HashMap<String, HashSet<String>> structure = new HashMap<String, HashSet<String>>();
             final HashSet<String> fileSet = new HashSet<String>();
@@ -84,8 +85,8 @@ public class FilePrepareStatementTest extends Statement {
             assertEquals("Touch of file '/home/mrpaeddah/Development/tutorials/JUnitRuleTutorial/FilePrepareRule/./tmp/test.jar' failed!", ex.getMessage());
         } finally {
             File f = new File("./tmp");
-            assertTrue(f.setWritable(true));
-            assertTrue(f.delete());
+            f.setWritable(true);
+            f.delete();
         }
     }
 
